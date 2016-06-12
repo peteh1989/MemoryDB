@@ -4,51 +4,65 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MemoryDB.Core.Interfaces;
 
 namespace MemoryDB.Core
 {
     public class MemoryList<T> : ICollection<T> where T : new()
     {
+        /// The in memory list
+        private readonly List<T> _list;
+
+        public MemoryList(IDataStore<T> dataStore)
+        {
+            DataStore = dataStore;
+            _list = DataStore.LoadData();
+
+        }
+
+        public int Count => _list.Count;
+
+        //The data store
+        public IDataStore<T> DataStore { get; }
+        public bool IsReadOnly => false;
+
+        public virtual void Add(T item)
+        {
+            this.DataStore.Add(item);
+            _list.Add(item);
+        }
+
+        public virtual void Clear()
+        {
+            this.DataStore.Clear();
+            _list.Clear();
+        }
+
+        public virtual bool Contains(T item)
+        {
+            return _list.Contains(item);
+        }
+
+        public virtual void CopyTo(T[] array, int arrayIndex)
+        {
+            _list.CopyTo(array, arrayIndex);
+        }
+
         public IEnumerator<T> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return _list.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
         }
-
-        public void Add(T item)
+        public virtual bool Remove(T item)
         {
-            throw new NotImplementedException();
+            this.DataStore.Remove(item);
+            var removed = _list.Remove(item);
+            return removed;
+
         }
-
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Contains(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(T[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove(T item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public int Count { get; }
-        public bool IsReadOnly { get; }
-    }
-
-    new()
-    {
     }
 }
