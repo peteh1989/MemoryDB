@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using MemoryDB.Core.Interfaces;
 using Newtonsoft.Json;
 
@@ -60,7 +62,14 @@ namespace MemoryDB.SqlServer
 
         public void Remove(T item)
         {
-            throw new NotImplementedException();
+            var pkProperty = GetKeyProperty();
+            var id = pkProperty.GetValue(item, null);
+
+            var sql = @"DELETE FROM @tableName WHERE Id = @id";
+            using (var db = new Database(_connectionName))
+            {
+                db.ExecNonQuery(sql, "@tableName", _tableName, "@id", id);
+            }
         }
 
         private void CreateTable(string tableName)
@@ -97,7 +106,7 @@ namespace MemoryDB.SqlServer
             var jsonList = new List<JsonItem>();
             using (var db = new Database(_connectionName))
             {
-                using (var rdr = db.ExecDataReader("", "", ""))
+                using (var rdr = db.ExecDataReader("SELECT Id, Value FROM @Table", "@Table", _tableName))
                 {
                     while (rdr.Read())
                     {
@@ -114,7 +123,7 @@ namespace MemoryDB.SqlServer
             using (var db = new Database(_connectionName))
             {
                 var sql = "IF OBJECT_ID('@tableName') IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                var tableExists = (bool) db.ExecScalar(sql, "@tableName", tableName);
+                var tableExists = (bool)db.ExecScalar(sql, "@tableName", tableName);
                 return tableExists;
             }
         }
@@ -123,6 +132,28 @@ namespace MemoryDB.SqlServer
         {
             internal int Id { get; set; }
             internal string Value { get; set; }
+        }
+
+        protected virtual PropertyInfo GetKeyProperty()
+        {
+            var myObject = new T();
+            var myType = myObject.GetType();
+            var myProperties = myType.GetProperties();
+            var objectTypeName = myType.Name;
+            PropertyInfo pkProperty = null;
+
+            // Is there a property named id (case irrelevant)?
+            pkProperty = myProperties.FirstOrDefault(n => n.Name.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            if (pkProperty == null)
+            {
+                // Is there a property named TypeNameId (case irrelevant)?
+                string findName = $"{objectTypeName}{"id"}";
+                pkProperty = myProperties.FirstOrDefault(n => n.Name.Equals(findName, StringComparison.InvariantCultureIgnoreCase));
+            }
+            if (pkProperty != null) return pkProperty;
+            var keyNotDefinedMessageFormat = ""
+                                                + "No key property is defined on {0}. Please define a property which forms a unique key for objects of this type.";
+            throw new Exception(string.Format(keyNotDefinedMessageFormat, objectTypeName));
         }
     }
 }
