@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("MemoryDB.Example.Console")]
+[assembly: AssemblyTitle("MemoryDB.ConsoleExample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MSC Industrial Direct Inc")]
-[assembly: AssemblyProduct("MemoryDB.Example.Console")]
+[assembly: AssemblyProduct("MemoryDB.ConsoleExample")]
 [assembly: AssemblyCopyright("Copyright © MSC Industrial Direct Inc 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("13bb23df-02d2-447b-9d8c-d211d79af4e8")]
+[assembly: Guid("ca37117f-39ee-470e-b424-8264cd6f5e8c")]
 
 // Version information for an assembly consists of the following four values:
 //

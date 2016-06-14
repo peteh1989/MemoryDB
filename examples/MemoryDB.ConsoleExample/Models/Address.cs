@@ -1,4 +1,4 @@
-﻿namespace MemoryDB.Example.Console.Models
+﻿namespace MemoryDB.ConsoleExample.Models
 {
     public class Address
     {

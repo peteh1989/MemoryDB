@@ -99,23 +99,14 @@ namespace MemoryDB.SqlServer
             }
         }
 
-        private bool DatabaseExists()
-        {
-            using (var db = new Database(_connectionName))
-            {
-                var sql = "IF DB_ID('@0') IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                var databaseExists = db.ExecuteScalar<bool>(sql, _databaseName);
-                return databaseExists;
-            }
-        }
-
         private void CreateTable()
         {
             using (var db = new Database(_connectionName))
             {
-                var sql = @"CREATE TABLE @0 (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
+                var sql = string.Format("CREATE TABLE {0} (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));",
+                    _tableName);
+                db.Execute(sql);
 
-                db.Execute(sql, _tableName);
             }
         }
 

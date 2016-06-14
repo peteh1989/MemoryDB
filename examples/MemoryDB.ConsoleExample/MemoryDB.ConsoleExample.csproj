@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}</ProjectGuid>
+    <ProjectGuid>{CA37117F-39EE-470E-B424-8264CD6F5E8C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MemoryDB.Example.Console</RootNamespace>
-    <AssemblyName>MemoryDB.Example.Console</AssemblyName>
+    <RootNamespace>MemoryDB.ConsoleExample</RootNamespace>
+    <AssemblyName>MemoryDB.ConsoleExample</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -54,7 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\MemoryDB.Core\MemoryDB.Core.csproj">
-      <Project>{4E703426-694B-4EBF-8056-7D76474855E1}</Project>
+      <Project>{4e703426-694b-4ebf-8056-7d76474855e1}</Project>
       <Name>MemoryDB.Core</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\MemoryDB.SqlServer\MemoryDB.SqlServer.csproj">

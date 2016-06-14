@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace MemoryDB.Example.Console.Models
+namespace MemoryDB.ConsoleExample.Models
 {
     public class Person
     {

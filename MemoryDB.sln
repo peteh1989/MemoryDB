@@ -9,9 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.SqlServer", "src\M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.SqlServer.Test", "tests\MemoryDB.SqlServer.Test\MemoryDB.SqlServer.Test.csproj", "{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.Example.Console", "examples\MemoryDB.Example.Console\MemoryDB.Example.Console.csproj", "{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C9CD9F9B-CF56-4181-A2AC-1BF831F0F806}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.ConsoleExample", "examples\MemoryDB.ConsoleExample\MemoryDB.ConsoleExample.csproj", "{CA37117F-39EE-470E-B424-8264CD6F5E8C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,15 +31,15 @@ Global
 		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA37117F-39EE-470E-B424-8264CD6F5E8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA37117F-39EE-470E-B424-8264CD6F5E8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA37117F-39EE-470E-B424-8264CD6F5E8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA37117F-39EE-470E-B424-8264CD6F5E8C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8} = {C9CD9F9B-CF56-4181-A2AC-1BF831F0F806}
+		{CA37117F-39EE-470E-B424-8264CD6F5E8C} = {C9CD9F9B-CF56-4181-A2AC-1BF831F0F806}
 	EndGlobalSection
 EndGlobal
