@@ -6,15 +6,16 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Emit;
 using MemoryDB.Core.Interfaces;
 using Newtonsoft.Json;
+using PetaPoco;
 
 namespace MemoryDB.SqlServer
 {
     public class SqlServerDataStore<T> : IDataStore<T> where T : new()
     {
         private readonly string _connectionName;
-        private readonly string _connectionString;
         private readonly string _tableName;
         private readonly string _databaseName;
 
@@ -22,13 +23,12 @@ namespace MemoryDB.SqlServer
         public SqlServerDataStore(string connectionName)
         {
             _connectionName = connectionName;
-            _connectionString = GetConnectionString();
             _databaseName = GetDatabaseName();
             _tableName = GetTableName();
 
 
-            if (!TableExists(_tableName))
-                CreateTable(_tableName);
+            if (!TableExists())
+                CreateTable();
 
         }
 
@@ -64,8 +64,8 @@ namespace MemoryDB.SqlServer
 
         public List<T> LoadData()
         {
-            if (!TableExists(_tableName))
-                CreateTable(_tableName);
+            if (!TableExists())
+                CreateTable();
 
             var js = new JsonSerializer();
 
@@ -92,47 +92,48 @@ namespace MemoryDB.SqlServer
             var pkProperty = GetKeyProperty();
             var id = pkProperty.GetValue(item, null);
 
-            var sql = @"DELETE FROM @tableName WHERE Id = @id";
+            var sql = @"DELETE FROM @0 WHERE Id = @id";
             using (var db = new Database(_connectionName))
             {
-                db.ExecNonQuery(sql, "@tableName", _tableName, "@id", id);
+                db.Execute(sql, id);
             }
         }
 
-        private bool DatabaseExists(string databaseName)
+        private bool DatabaseExists()
         {
-            using (var db = new Database(_connectionString))
+            using (var db = new Database(_connectionName))
             {
-                var sql = "IF DB_ID('@databaseName') IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                var databaseExists = (bool)db.ExecScalar(sql, "@databaseName", databaseName);
+                var sql = "IF DB_ID('@0') IS NOT NULL SELECT 1 ELSE SELECT 0;";
+                var databaseExists = db.ExecuteScalar<bool>(sql, _databaseName);
                 return databaseExists;
             }
         }
 
-        private void CreateTable(string tableName)
+        private void CreateTable()
         {
-            using (var db = new Database(_connectionString))
+            using (var db = new Database(_connectionName))
             {
-                var sql = @"CREATE TABLE @tableName (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
-                db.ExecNonQuery(sql, "@tableName", tableName);
+                var sql = @"CREATE TABLE @0 (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
+
+                db.Execute(sql, _tableName);
             }
         }
 
-        /// <summary>
-        ///     Maps data record to Json record object
-        /// </summary>
-        /// <param name="dataRecord">The data record.</param>
-        /// <returns></returns>
-        private JsonItem FillDataRecord(IDataRecord dataRecord)
-        {
-            var jsonItem = new JsonItem
-            {
-                Id = dataRecord.GetInt32(dataRecord.GetOrdinal("Id")),
-                Value = dataRecord.GetString(dataRecord.GetOrdinal("Value"))
-            };
+        ///// <summary>
+        /////     Maps data record to Json record object
+        ///// </summary>
+        ///// <param name="dataRecord">The data record.</param>
+        ///// <returns></returns>
+        //private JsonItem FillDataRecord(IDataRecord dataRecord)
+        //{
+        //    var jsonItem = new JsonItem
+        //    {
+        //        Id = dataRecord.GetInt32(dataRecord.GetOrdinal("Id")),
+        //        Value = dataRecord.GetString(dataRecord.GetOrdinal("Value"))
+        //    };
 
-            return jsonItem;
-        }
+        //    return jsonItem;
+        //}
 
         /// <summary>
         ///     gets the list of unserialized json records
@@ -141,27 +142,21 @@ namespace MemoryDB.SqlServer
         private List<JsonItem> GetJsonList()
         {
             var jsonList = new List<JsonItem>();
-            using (var db = new Database(_connectionString))
+            using (var db = new Database(_connectionName))
             {
-                using (var rdr = db.ExecDataReader("SELECT Id, Value FROM @Table", "@Table", _tableName))
-                {
-                    while (rdr.Read())
-                    {
-                        jsonList.Add(FillDataRecord(rdr));
-                    }
-                }
+                var sql = "SELECT Id, Value FROM @0";
+                db.Fetch<JsonItem>(sql, _tableName);
             }
 
             return jsonList;
         }
 
-        private bool TableExists(string tableName)
+        private bool TableExists()
         {
-            using (var db = new Database(_connectionString))
+            using (var db = new Database(_connectionName))
             {
-                var sql = "IF OBJECT_ID('@tableName') IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                var tableExists = db.ExecScalar(sql, "@tableName", tableName);
-                return tableExists.ToString() == "1";
+                var sql = "IF OBJECT_ID(@0) IS NOT NULL SELECT 1 ELSE SELECT 0;";
+                return  db.ExecuteScalar<bool>(sql, _tableName);
             }
         }
 
