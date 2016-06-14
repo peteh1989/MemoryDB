@@ -6,13 +6,9 @@ namespace MemoryDB.ConsoleExample
 {
     class Program
     {
-
-
         private static void Main(string[] args)
         {
-            try
-            {
-
+  
                 var database = new Database();
                 database.AddressList.Add(new Address
                 {
@@ -29,12 +25,8 @@ namespace MemoryDB.ConsoleExample
                     System.Console.WriteLine(address.PostCode);
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadLine();
-            }
+    
 
         }
     }
-}
+

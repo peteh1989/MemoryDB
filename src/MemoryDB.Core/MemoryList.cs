@@ -6,6 +6,10 @@ namespace MemoryDB.Core
 {
     public class MemoryList<T> : ICollection<T> where T : new()
     {
+
+        //The data store
+        public IDataStore<T> DataStore { get; }
+
         /// The in memory list
         private readonly List<T> _list;
 
@@ -16,9 +20,6 @@ namespace MemoryDB.Core
         }
 
         public int Count => _list.Count;
-
-        //The data store
-        public IDataStore<T> DataStore { get; }
 
         public bool IsReadOnly => false;
 

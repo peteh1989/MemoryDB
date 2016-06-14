@@ -26,22 +26,12 @@ namespace MemoryDB.SqlServer
             _databaseName = GetDatabaseName();
             _tableName = GetTableName();
 
-
-            if (!TableExists())
-                CreateTable();
-
         }
 
         private string GetTableName()
         {
             return typeof(T).Name + "_";
 
-        }
-
-        private string GetConnectionString()
-        {
-            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
-            return connectionString;
         }
 
         private string GetDatabaseName()
@@ -92,9 +82,9 @@ namespace MemoryDB.SqlServer
             var pkProperty = GetKeyProperty();
             var id = pkProperty.GetValue(item, null);
 
-            var sql = @"DELETE FROM @0 WHERE Id = @id";
             using (var db = new Database(_connectionName))
             {
+                var sql = $"DELETE FROM {_tableName} WHERE Id = @0";
                 db.Execute(sql, id);
             }
         }
@@ -103,28 +93,10 @@ namespace MemoryDB.SqlServer
         {
             using (var db = new Database(_connectionName))
             {
-                var sql = string.Format("CREATE TABLE {0} (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));",
-                    _tableName);
+                var sql = $"CREATE TABLE {_tableName} (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
                 db.Execute(sql);
-
             }
         }
-
-        ///// <summary>
-        /////     Maps data record to Json record object
-        ///// </summary>
-        ///// <param name="dataRecord">The data record.</param>
-        ///// <returns></returns>
-        //private JsonItem FillDataRecord(IDataRecord dataRecord)
-        //{
-        //    var jsonItem = new JsonItem
-        //    {
-        //        Id = dataRecord.GetInt32(dataRecord.GetOrdinal("Id")),
-        //        Value = dataRecord.GetString(dataRecord.GetOrdinal("Value"))
-        //    };
-
-        //    return jsonItem;
-        //}
 
         /// <summary>
         ///     gets the list of unserialized json records
@@ -135,7 +107,7 @@ namespace MemoryDB.SqlServer
             var jsonList = new List<JsonItem>();
             using (var db = new Database(_connectionName))
             {
-                var sql = "SELECT Id, Value FROM @0";
+                var sql = $"SELECT Id, Value FROM  {_tableName}";
                 db.Fetch<JsonItem>(sql, _tableName);
             }
 
