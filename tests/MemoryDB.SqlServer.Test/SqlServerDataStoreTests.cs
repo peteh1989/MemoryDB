@@ -9,7 +9,11 @@ namespace MemoryDB.SqlServer.Test
 {
     public class SqlServerDataStoreTests
     {
-
+        [Test]
+        public void TestTheTest()
+        {
+            Assert.AreEqual(1, 1);
+        }
    
     }
 }

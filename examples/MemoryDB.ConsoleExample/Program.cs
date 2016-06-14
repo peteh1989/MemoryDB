@@ -6,10 +6,13 @@ namespace MemoryDB.ConsoleExample
 {
     class Program
     {
+
+        private static Database database = new Database();
+
         private static void Main(string[] args)
         {
   
-                var database = new Database();
+              //  var database = new Database();
                 database.AddressList.Add(new Address
                 {
                     AddressLine1 = "6 ",

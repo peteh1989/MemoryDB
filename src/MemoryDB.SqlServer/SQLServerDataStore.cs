@@ -31,7 +31,6 @@ namespace MemoryDB.SqlServer
         private string GetTableName()
         {
             return typeof(T).Name + "_";
-
         }
 
         private string GetDatabaseName()
