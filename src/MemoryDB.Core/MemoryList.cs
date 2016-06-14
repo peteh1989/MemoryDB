@@ -1,10 +1,6 @@
-﻿using System;
+﻿using MemoryDB.Core.Interfaces;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MemoryDB.Core.Interfaces;
 
 namespace MemoryDB.Core
 {
@@ -17,13 +13,13 @@ namespace MemoryDB.Core
         {
             DataStore = dataStore;
             _list = DataStore.LoadData();
-
         }
 
         public int Count => _list.Count;
 
         //The data store
         public IDataStore<T> DataStore { get; }
+
         public bool IsReadOnly => false;
 
         public virtual void Add(T item)
@@ -57,12 +53,12 @@ namespace MemoryDB.Core
         {
             return GetEnumerator();
         }
+
         public virtual bool Remove(T item)
         {
             this.DataStore.Remove(item);
             var removed = _list.Remove(item);
             return removed;
-
         }
     }
 }

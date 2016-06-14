@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -12,18 +14,43 @@ namespace MemoryDB.SqlServer
     public class SqlServerDataStore<T> : IDataStore<T> where T : new()
     {
         private readonly string _connectionName;
+        private readonly string _connectionString;
         private readonly string _tableName;
+        private readonly string _databaseName;
+
 
         public SqlServerDataStore(string connectionName)
         {
             _connectionName = connectionName;
+            _connectionString = GetConnectionString();
+            _databaseName = GetDatabaseName();
+            _tableName = GetTableName();
+
+
+            if (!TableExists(_tableName))
+                CreateTable(_tableName);
+
         }
 
-        public SqlServerDataStore(string connectionName, string tableName)
+        private string GetTableName()
         {
-            _connectionName = connectionName;
-            _tableName = tableName;
+            return typeof(T).Name + "_";
+
         }
+
+        private string GetConnectionString()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
+            return connectionString;
+        }
+
+        private string GetDatabaseName()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
+            var builder = new SqlConnectionStringBuilder(connectionString);
+            return builder.InitialCatalog;
+        }
+
 
         public T Add(T item)
         {
@@ -72,11 +99,21 @@ namespace MemoryDB.SqlServer
             }
         }
 
+        private bool DatabaseExists(string databaseName)
+        {
+            using (var db = new Database(_connectionString))
+            {
+                var sql = "IF DB_ID('@databaseName') IS NOT NULL SELECT 1 ELSE SELECT 0;";
+                var databaseExists = (bool)db.ExecScalar(sql, "@databaseName", databaseName);
+                return databaseExists;
+            }
+        }
+
         private void CreateTable(string tableName)
         {
-            using (var db = new Database(_connectionName))
+            using (var db = new Database(_connectionString))
             {
-                var sql = @"CREATE TABLE @tableName (Id INT IDENTITY NOT NULL, Value VARCHAR(MAX));";
+                var sql = @"CREATE TABLE @tableName (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
                 db.ExecNonQuery(sql, "@tableName", tableName);
             }
         }
@@ -104,7 +141,7 @@ namespace MemoryDB.SqlServer
         private List<JsonItem> GetJsonList()
         {
             var jsonList = new List<JsonItem>();
-            using (var db = new Database(_connectionName))
+            using (var db = new Database(_connectionString))
             {
                 using (var rdr = db.ExecDataReader("SELECT Id, Value FROM @Table", "@Table", _tableName))
                 {
@@ -120,11 +157,11 @@ namespace MemoryDB.SqlServer
 
         private bool TableExists(string tableName)
         {
-            using (var db = new Database(_connectionName))
+            using (var db = new Database(_connectionString))
             {
                 var sql = "IF OBJECT_ID('@tableName') IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                var tableExists = (bool)db.ExecScalar(sql, "@tableName", tableName);
-                return tableExists;
+                var tableExists = db.ExecScalar(sql, "@tableName", tableName);
+                return tableExists.ToString() == "1";
             }
         }
 
@@ -140,10 +177,9 @@ namespace MemoryDB.SqlServer
             var myType = myObject.GetType();
             var myProperties = myType.GetProperties();
             var objectTypeName = myType.Name;
-            PropertyInfo pkProperty = null;
 
             // Is there a property named id (case irrelevant)?
-            pkProperty = myProperties.FirstOrDefault(n => n.Name.Equals("id", StringComparison.InvariantCultureIgnoreCase));
+            var pkProperty = myProperties.FirstOrDefault(n => n.Name.Equals("id", StringComparison.InvariantCultureIgnoreCase));
             if (pkProperty == null)
             {
                 // Is there a property named TypeNameId (case irrelevant)?

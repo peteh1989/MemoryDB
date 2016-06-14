@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.Core", "src\Memory
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.SqlServer", "src\MemoryDB.SqlServer\MemoryDB.SqlServer.csproj", "{D7C8A864-D9E9-4EEC-A238-40D5D4409A32}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.SqlServer.Test", "tests\MemoryDB.SqlServer.Test\MemoryDB.SqlServer.Test.csproj", "{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryDB.Example.Console", "examples\MemoryDB.Example.Console\MemoryDB.Example.Console.csproj", "{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{C9CD9F9B-CF56-4181-A2AC-1BF831F0F806}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +27,19 @@ Global
 		{D7C8A864-D9E9-4EEC-A238-40D5D4409A32}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7C8A864-D9E9-4EEC-A238-40D5D4409A32}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7C8A864-D9E9-4EEC-A238-40D5D4409A32}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1749CB0-9CFB-4D37-B8C0-EDE5AEE7328D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{13BB23DF-02D2-447B-9D8C-D211D79AF4E8} = {C9CD9F9B-CF56-4181-A2AC-1BF831F0F806}
 	EndGlobalSection
 EndGlobal
