@@ -107,7 +107,7 @@ namespace MemoryDB.SqlServer
             using (var db = new Database(_connectionName))
             {
                 var sql = $"SELECT Id, Value FROM  {_tableName}";
-                db.Fetch<JsonItem>(sql, _tableName);
+                db.Fetch<JsonItem>(sql);
             }
 
             return jsonList;
@@ -117,8 +117,8 @@ namespace MemoryDB.SqlServer
         {
             using (var db = new Database(_connectionName))
             {
-                var sql = "IF OBJECT_ID(@0) IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                return  db.ExecuteScalar<bool>(sql, _tableName);
+                var sql = $"IF OBJECT_ID('{_tableName}') IS NOT NULL SELECT 1 ELSE SELECT 0;";
+                return  db.ExecuteScalar<bool>(sql);
             }
         }
 
