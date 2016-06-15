@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using MemoryDB.Core;
 using MemoryDB.Core.Interfaces;
 using Newtonsoft.Json;
 using PetaPoco;
@@ -25,7 +26,6 @@ namespace MemoryDB.SqlServer
             _connectionName = connectionName;
             _databaseName = GetDatabaseName();
             _tableName = GetTableName();
-
         }
 
         private string GetTableName()
@@ -122,11 +122,6 @@ namespace MemoryDB.SqlServer
             }
         }
 
-        internal class JsonItem
-        {
-            internal int Id { get; set; }
-            internal string Value { get; set; }
-        }
 
         protected virtual PropertyInfo GetKeyProperty()
         {

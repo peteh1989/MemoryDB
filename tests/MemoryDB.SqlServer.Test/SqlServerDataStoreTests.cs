@@ -9,6 +9,14 @@ namespace MemoryDB.SqlServer.Test
 {
     public class SqlServerDataStoreTests
     {
+
+        public void Setup()
+        {
+            
+        }
+
+
+
         [Test]
         public void TestTheTest()
         {
