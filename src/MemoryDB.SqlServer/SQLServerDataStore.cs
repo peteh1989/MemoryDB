@@ -1,25 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using MemoryDB.Core;
+﻿using MemoryDB.Core;
 using MemoryDB.Core.Interfaces;
 using Newtonsoft.Json;
 using PetaPoco;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.IO;
 
 namespace MemoryDB.SqlServer
 {
     public class SqlServerDataStore<T> : IDataStore<T> where T : new()
     {
         private readonly string _connectionName;
-        private readonly string _tableName;
         private readonly string _databaseName;
-
+        private readonly string _tableName;
 
         public SqlServerDataStore(string connectionName)
         {
@@ -28,27 +23,24 @@ namespace MemoryDB.SqlServer
             _tableName = GetTableName();
         }
 
-        private string GetTableName()
-        {
-            return typeof(T).Name + "_";
-        }
-
-        private string GetDatabaseName()
-        {
-            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            return builder.InitialCatalog;
-        }
-
-
         public T Add(T item)
         {
-            throw new NotImplementedException();
+            var jsonItem = new JsonItem<T>(item);
+            using (var database = new Database(_connectionName))
+            {
+                var sql = $"INSERT INTO {_tableName} VALUES ( {jsonItem.Id}, {jsonItem.Value} );";
+                database.Execute(sql);
+            }
+            return item;
         }
 
         public void Clear()
         {
-            throw new NotImplementedException();
+            using (var database = new Database(_connectionName))
+            {
+                var sql = $"TRUNCATE TABLE {_tableName};";
+                database.Execute(sql);
+            }
         }
 
         public List<T> LoadData()
@@ -78,15 +70,14 @@ namespace MemoryDB.SqlServer
 
         public void Remove(T item)
         {
-            var pkProperty = GetKeyProperty();
-            var id = pkProperty.GetValue(item, null);
-
-            using (var db = new Database(_connectionName))
+            var jsonItem = new JsonItem<T>(item);
+            using (var database = new Database(_connectionName))
             {
-                var sql = $"DELETE FROM {_tableName} WHERE Id = @0";
-                db.Execute(sql, id);
+                var sql = $"DELETE FROM {_tableName} WHERE Id = {jsonItem.Id};";
+                database.Execute(sql);
             }
         }
+
 
         private void CreateTable()
         {
@@ -97,11 +88,18 @@ namespace MemoryDB.SqlServer
             }
         }
 
+        private string GetDatabaseName()
+        {
+            var connectionString = ConfigurationManager.ConnectionStrings[_connectionName].ConnectionString;
+            var builder = new SqlConnectionStringBuilder(connectionString);
+            return builder.InitialCatalog;
+        }
+
         /// <summary>
         ///     gets the list of unserialized json records
         /// </summary>
         /// <returns></returns>
-        private List<JsonItem> GetJsonList()
+        private List<JsonItem<T>> GetJsonList()
         {
             var jsonList = new List<JsonItem>();
             using (var db = new Database(_connectionName))
@@ -113,35 +111,18 @@ namespace MemoryDB.SqlServer
             return jsonList;
         }
 
+        private string GetTableName()
+        {
+            return typeof(T).Name + "_";
+        }
+
         private bool TableExists()
         {
             using (var db = new Database(_connectionName))
             {
                 var sql = $"IF OBJECT_ID('{_tableName}') IS NOT NULL SELECT 1 ELSE SELECT 0;";
-                return  db.ExecuteScalar<bool>(sql);
+                return db.ExecuteScalar<bool>(sql);
             }
-        }
-
-
-        protected virtual PropertyInfo GetKeyProperty()
-        {
-            var myObject = new T();
-            var myType = myObject.GetType();
-            var myProperties = myType.GetProperties();
-            var objectTypeName = myType.Name;
-
-            // Is there a property named id (case irrelevant)?
-            var pkProperty = myProperties.FirstOrDefault(n => n.Name.Equals("id", StringComparison.InvariantCultureIgnoreCase));
-            if (pkProperty == null)
-            {
-                // Is there a property named TypeNameId (case irrelevant)?
-                string findName = $"{objectTypeName}{"id"}";
-                pkProperty = myProperties.FirstOrDefault(n => n.Name.Equals(findName, StringComparison.InvariantCultureIgnoreCase));
-            }
-            if (pkProperty != null) return pkProperty;
-            var keyNotDefinedMessageFormat = ""
-                                                + "No key property is defined on {0}. Please define a property which forms a unique key for objects of this type.";
-            throw new Exception(string.Format(keyNotDefinedMessageFormat, objectTypeName));
         }
     }
 }
