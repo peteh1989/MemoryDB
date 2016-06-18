@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\IDataStore.cs" />
-    <Compile Include="JsonHelper.cs" />
     <Compile Include="JsonItem.cs" />
     <Compile Include="MemoryList.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

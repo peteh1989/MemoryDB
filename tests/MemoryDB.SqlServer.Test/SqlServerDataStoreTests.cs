@@ -1,27 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MemoryDB.SqlServer.Test.Models;
 using NUnit.Framework;
 
 namespace MemoryDB.SqlServer.Test
 {
     public class SqlServerDataStoreTests
     {
-
-        public void Setup()
-        {
-            
-        }
-
-
+        private static readonly Database Database = new Database();
 
         [Test]
-        public void TestTheTest()
+        public void LoadDataReturnsList()
         {
-            Assert.AreEqual(1, 1);
+            Database.AddressList.Add(new Address
+            {
+                AddressLine1 = "6 ",
+                AddressLine2 = "Some Avenue",
+                PostCode = "FU0 7SW"
+            });
+
+            Assert.IsNotEmpty(Database.AddressList);
         }
-   
+
+        public void Prep()
+        {
+            Database.AddressList.Clear();
+            Database.PersonList.Clear();
+        }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace MemoryDB.Core
@@ -13,28 +10,21 @@ namespace MemoryDB.Core
         public int Id { get; set; }
         public string Value { get; set; }
 
-        public JsonItem(T item)
+        public JsonItem()
         {
             
-        }
+        } 
 
-
-        private JsonItem<T> ConvertToJsonItem(T item)
+        public JsonItem(T item)
         {
-            var value = JsonConvert.SerializeObject(item);
-            var jsonItem = new JsonItem<T>
-            {
-                Id = GetIdValue(),
-                Value = value
-            };
-
-            return jsonItem;
+            Value = JsonConvert.SerializeObject(item);
+            Id = GetIdValue(item);
         }
 
-        private int GetIdValue()
+        private int GetIdValue(T item)
         {
             var idProperty = GetIdProperty();
-            var idValue = idProperty.GetValue(typeof(T), null);
+            var idValue = idProperty.GetValue(item, null);
             return (int) idValue;
         }
 
@@ -59,5 +49,9 @@ namespace MemoryDB.Core
             throw new Exception(string.Format(keyNotDefinedMessageFormat, objectTypeName));
         }
 
+        public T Deserialize()
+        {
+            return JsonConvert.DeserializeObject<T>(Value);
+        }
     }
 }

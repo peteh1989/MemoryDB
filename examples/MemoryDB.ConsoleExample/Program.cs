@@ -27,8 +27,11 @@ namespace MemoryDB.ConsoleExample
                     System.Console.WriteLine(address.AddressLine2);
                     System.Console.WriteLine(address.PostCode);
                 }
-            }
+
+            System.Console.ReadLine();
+        }
     
+     
 
         }
     }
