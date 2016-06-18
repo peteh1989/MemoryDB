@@ -77,7 +77,7 @@ namespace MemoryDB.SqlServer
         {
             using (var db = new Database(_connectionName))
             {
-                var sql = $"CREATE TABLE [{_tableName}] (Id INT NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
+                var sql = $"CREATE TABLE [{_tableName}] (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
                 db.Execute(sql);
             }
         }
