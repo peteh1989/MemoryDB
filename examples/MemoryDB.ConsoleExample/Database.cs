@@ -14,8 +14,8 @@ namespace MemoryDB.ConsoleExample
         {
             var _connectionName = "DefaultConnection";
 
-            var addressStore = new SqlServerDataStore<Address>(_connectionName);
-            var personStore = new SqlServerDataStore<Person>(_connectionName);
+            var addressStore = new SqlServerDataStore<Address>(_connectionName, true);
+            var personStore = new SqlServerDataStore<Person>(_connectionName, true);
 
             AddressList = new MemoryList<Address>(addressStore);
             PersonList = new MemoryList<Person>(personStore);

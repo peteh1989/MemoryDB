@@ -7,20 +7,19 @@ namespace MemoryDB.ConsoleExample
     class Program
     {
 
-        private static Database database = new Database();
+        private static readonly Database Database = new Database();
 
         private static void Main(string[] args)
         {
-  
-              //  var database = new Database();
-                database.AddressList.Add(new Address
+            Database.AddressList.Clear();
+                Database.AddressList.Add(new Address
                 {
                     AddressLine1 = "6 ",
                     AddressLine2 = "Some Avenue",
                     PostCode = "FU0 7SW"
                 });
 
-                foreach (var address in database.AddressList)
+                foreach (var address in Database.AddressList)
                 {
                     System.Console.WriteLine(address.AddressId);
                     System.Console.WriteLine(address.AddressLine1);
@@ -29,6 +28,7 @@ namespace MemoryDB.ConsoleExample
                 }
 
             System.Console.ReadLine();
+
         }
     
      

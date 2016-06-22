@@ -5,25 +5,42 @@ namespace MemoryDB.SqlServer.Test
 {
     public class SqlServerDataStoreTests
     {
-        private static readonly Database Database = new Database();
+        public SqlServerDataStoreTests()
+        {
+           
+        }
 
         [Test]
-        public void LoadDataReturnsList()
+        public void ClearListRemovesData()
         {
-            Database.AddressList.Add(new Address
+            var database = new Database(true);
+            database.AddressList.Clear();
+            Assert.IsEmpty(database.AddressList);
+        }
+
+        [Test]
+        public void AddItem()
+        {
+            var database = new Database(true);
+
+            database.AddressList.Add(new Address
             {
                 AddressLine1 = "6 ",
                 AddressLine2 = "Some Avenue",
                 PostCode = "FU0 7SW"
             });
 
-            Assert.IsNotEmpty(Database.AddressList);
+            Assert.IsNotEmpty(database.AddressList);
         }
 
-        public void Prep()
+        [Test]
+        public void LoadDataResturnsList()
         {
-            Database.AddressList.Clear();
-            Database.PersonList.Clear();
+            var database = new Database(true);
+            
         }
+
+
+
     }
 }

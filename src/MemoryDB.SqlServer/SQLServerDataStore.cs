@@ -10,12 +10,23 @@ namespace MemoryDB.SqlServer
     {
         private readonly string _connectionName;
         private readonly string _tableName;
+        private readonly bool _identityInsert;
 
         public SqlServerDataStore(string connectionName)
         {
             _connectionName = connectionName;
             _tableName = GetTableName();
+            _identityInsert = true;
         }
+
+
+        public SqlServerDataStore(string connectionName, bool identityInsert)
+        {
+            _connectionName = connectionName;
+            _tableName = GetTableName();
+            _identityInsert = identityInsert;
+        }
+
 
         /// <summary>
         /// Adds the specified item.
@@ -27,8 +38,13 @@ namespace MemoryDB.SqlServer
             var jsonItem = new JsonItem<T>(item);
             using (var database = new Database(_connectionName))
             {
-                var sql = $"INSERT INTO [{_tableName}] VALUES ('{jsonItem.Value}' );";
-                database.Execute(sql);
+                string sql;
+                if (_identityInsert)
+                    sql = $"INSERT INTO [{_tableName}] VALUES ('{jsonItem.Value}' );";
+                else
+                    sql = $"INSERT INTO [{_tableName}] VALUES('{jsonItem.Id}', {jsonItem.Value}');";                 
+                    
+                    database.Execute(sql);
             }
             return item;
         }
@@ -77,7 +93,7 @@ namespace MemoryDB.SqlServer
         {
             using (var db = new Database(_connectionName))
             {
-                var sql = $"CREATE TABLE [{_tableName}] (Id INT IDENTITY NOT NULL PRIMARY KEY, Value VARCHAR(MAX));";
+                var sql =  $"CREATE TABLE [{_tableName}] (Id NVARCHAR(4000) IDENTITY NOT NULL PRIMARY KEY, Value NVARCHAR(MAX));";
                 db.Execute(sql);
             }
         }

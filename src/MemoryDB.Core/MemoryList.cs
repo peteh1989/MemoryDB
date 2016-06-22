@@ -8,7 +8,7 @@ namespace MemoryDB.Core
     {
 
         //The data store
-        public IDataStore<T> DataStore { get; }
+        private IDataStore<T> DataStore { get; }
 
         /// The in memory list
         private readonly List<T> _list;

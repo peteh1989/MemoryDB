@@ -5,15 +5,15 @@ using Newtonsoft.Json;
 
 namespace MemoryDB.Core
 {
-    public class JsonItem<T> where T: new ()
+    public class JsonItem<T> where T : new()
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public string Value { get; set; }
 
         public JsonItem()
         {
-            
-        } 
+
+        }
 
         public JsonItem(T item)
         {
@@ -21,14 +21,14 @@ namespace MemoryDB.Core
             Id = GetIdValue(item);
         }
 
-        private int GetIdValue(T item)
+        private string GetIdValue(T item)
         {
             var idProperty = GetIdProperty();
-            var idValue = idProperty.GetValue(item, null);
-            return (int) idValue;
+            var idValue = idProperty.GetValue(item, null).ToString();
+            return idValue != String.Empty ? idValue : Guid.NewGuid().ToString();
         }
 
-        private  PropertyInfo GetIdProperty()
+        private PropertyInfo GetIdProperty()
         {
             var myObject = new T();
             var myType = myObject.GetType();
